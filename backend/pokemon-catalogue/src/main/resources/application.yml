@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: pokemon-catalogue-service
+
+server:
+  port: 8091
+  error:
+    include-message: always
+    include-binding-errors: always
+
+pokeapi:
+  url:
+    pokemon: https://pokeapi.co/api/v2/pokemon/
+    generation: https://pokeapi.co/api/v2/generation/1
+
+logging:
+  pattern:
+    console: "%d{yyyy-mm-dd HH:mm:ss} ${LOG_LEVEL_PATTERN:-%5p} %m%n"

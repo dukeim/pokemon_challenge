@@ -1,0 +1,45 @@
+server:
+  port: 8092
+  error:
+    include-message: always
+    include-binding-errors: always
+
+spring:
+  application:
+    name: pokemon-team-manager-service
+  h2:
+    console:
+      enabled: true
+
+  datasource:
+    url: jdbc:h2:mem:teamManagerDB;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driverClassName: org.h2.Driver
+    platform: h2
+    username: sa
+    password:
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.H2Dialect
+    defer-datasource-initialization: true
+    properties:
+      hibernate:
+        show-sql: true
+        use-sql-comments: false
+        format-sql: false
+
+pokeapi:
+  url:
+    pokemon: https://pokeapi.co/api/v2/pokemon/
+    generation: https://pokeapi.co/api/v2/generation/1
+
+logging:
+  pattern:
+    console: "%d{yyyy-mm-dd HH:mm:ss} ${LOG_LEVEL_PATTERN:-%5p} %m%n"
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8099/eureka
