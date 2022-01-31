@@ -17,3 +17,16 @@ spring:
           uri: lb://pokemon-team-manager-service
           predicates:
             - Path=/team_manager/**
+        - id: catalogue-service
+          uri: lb://pokemon-catalogue-service
+          predicates:
+            - Path=/catalogue/**
+        - id: trainer-service
+            uri: lb://pokemon-trainer-service
+            predicates:
+              - Path=/trainer/**
+        - id: security-service
+          uri: lb://security-service
+          predicates:
+            - Path=/security/**
+
