@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 @RestController
-@RequestMapping("/trainers")
+@RequestMapping("/trainer")
 public class TrainerProfileController {
 
     public final ITrainerProfileService trainerProfileService;
