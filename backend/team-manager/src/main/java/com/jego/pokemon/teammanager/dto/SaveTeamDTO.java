@@ -7,6 +7,5 @@ import java.util.List;
 
 @Data
 public class SaveTeamDTO {
-    public Long trainerId;
     public List<PokemonBasicDTO> pokemons = new ArrayList<>();;
 }

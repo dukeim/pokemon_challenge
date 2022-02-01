@@ -9,12 +9,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ITeamRepository extends JpaRepository<TeamMember, Long> {
-    public Optional<List<TeamMember>> findByTrainerIdAndDeletedFalse(Long trainerId);
-    public Boolean existsByTrainerIdAndPokemonNameAndDeletedFalse(Long trainerId, String pokemonName);
-    public Boolean existsByTrainerIdAndPokemonName(Long trainerId, String pokemonName);
-    public Optional<TeamMember> findByTrainerIdAndPokemonNameAndDeletedFalse(Long trainerId, String pokemonName);
+    public Optional<List<TeamMember>> findByUserNameAndDeletedFalse(String userName);
+    public Optional<List<TeamMember>> findByUserName(String userName);
+
 
     @Modifying
-    @Query(value = "update TeamMember tm set tm.deleted = true where tm.trainerId = :trainerId and tm.deleted = false")
-    void deleteTeam(Long trainerId);
+    @Query(value = "update TeamMember tm set tm.deleted = true where tm.userName = :userName and tm.deleted = false")
+    void deleteTeam(String userName);
 }

@@ -1,11 +1,8 @@
 package com.jego.pokemon.teammanager.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 
@@ -22,9 +19,9 @@ public class TeamMember implements Serializable {
     @Column(name="pokemon_name", nullable=false)
     private String pokemonName;
 
-    @NotNull(message = "The name can't be empty")
-    @Column(name="trainer_id", nullable=false)
-    private Long trainerId;
+    @NotEmpty(message = "The username can't be empty")
+    @Column(name="username", nullable=false)
+    private String userName;
 
     @Column(name="deleted", nullable=false)
     private boolean deleted = false;

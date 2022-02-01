@@ -10,8 +10,8 @@ public class Constant {
     // public static final String PRIVATE_KEY_FILE_RSA = "/security/rsa-private.pem";
     // public static final String PUBLIC_KEY_FILE_RSA = "/security/rsa-public.pem";
 
-    public static final String PRIVATE_KEY_FILE_RSA = "C:\\Users\\jgutierrez\\certificadosRSA\\rsa-private.pem";
-    public static final String PUBLIC_KEY_FILE_RSA = "C:\\Users\\jgutierrez\\certificadosRSA\\rsa-public.pem";
+    public static final String PRIVATE_KEY_FILE_RSA = "C:\\certificadosRSA\\rsa-private.pem";
+    public static final String PUBLIC_KEY_FILE_RSA = "C:\\certificadosRSA\\rsa-public.pem";
 
     public static final String    ALGORIHM_RSA ="RSA";
     public static final String TOKEN_PREFIX = "Bearer ";
