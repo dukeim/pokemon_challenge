@@ -32,27 +32,30 @@ public class TeamManagerController {
     private final Environment env;
 
     @PostMapping
-    public ResponseEntity<?> saveTeam(@Valid @RequestBody SaveTeamDTO saveTeamDTO, BindingResult result) {
+    public ResponseEntity<?> saveTeam(@Valid @RequestBody SaveTeamDTO saveTeamDTO, @RequestHeader("USERNAME") String userName, BindingResult result) {
 
         if (result.hasErrors()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, this.formatMessage(result));
         }
-
-        teamService.saveTeam(saveTeamDTO.trainerId, saveTeamDTO.pokemons);
-
-        return  ResponseEntity.status( HttpStatus.CREATED).body(new ResponseMessage("Team saved"));
+        if(userName!=null) {
+            teamService.saveTeam(userName, saveTeamDTO.pokemons);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(new ResponseMessage("Team saved"));
+        }else{
+            return ResponseEntity.status( HttpStatus.BAD_REQUEST)
+                    .body(new ResponseMessage("Username missing"));
+        }
     }
 
-    @GetMapping(value = "/team/{trainerId}")
-    public ResponseEntity<?> getTeam(@PathVariable("trainerId") long trainerId){
-        List<TeamMember> teamMembers = teamService.getTeam(trainerId);
+    @GetMapping(value = "/team")
+    public ResponseEntity<?> getTeam(@RequestHeader("USERNAME") String userName){
+        List<TeamMember> teamMembers = teamService.getTeam(userName);
         PokemonStatsDTO pokemonStatsDTO;
         PokemonResumeDTO pokemonResumeDTO;
         TeamDetailDTO teamDetailDTO;
 
         if(teamMembers != null && !teamMembers.isEmpty()) {
             teamDetailDTO = new TeamDetailDTO();
-            teamDetailDTO.setTrainerId(trainerId);
 
             for (TeamMember member : teamMembers) {
                 try {

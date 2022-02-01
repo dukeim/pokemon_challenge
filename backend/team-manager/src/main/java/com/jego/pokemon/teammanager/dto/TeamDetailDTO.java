@@ -9,6 +9,5 @@ import java.util.List;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TeamDetailDTO {
-    private Long trainerId;
     private List<PokemonResumeDTO> pokemons = new ArrayList<>();
 }

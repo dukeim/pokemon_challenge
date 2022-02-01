@@ -2,8 +2,11 @@ package com.jego.pokemon.trainerprofile.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jego.pokemon.trainerprofile.dto.TrainerProfileNewDTO;
+import com.jego.pokemon.trainerprofile.dto.TrainerProfileUpdateDTO;
 import com.jego.pokemon.trainerprofile.entity.TrainerProfile;
 import com.jego.pokemon.trainerprofile.service.ITrainerProfileService;
+import com.jego.pokemon.trainerprofile.util.Constants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -11,6 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.time.LocalDate;
+import java.time.Period;
 
 import javax.validation.Valid;
 import java.util.HashMap;
@@ -26,46 +32,48 @@ public class TrainerProfileController {
 
     public final ITrainerProfileService trainerProfileService;
 
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<TrainerProfile> getTrainerProfile(@PathVariable("id") long id) {
-        log.info("Fetching Customer with id {}", id);
-        TrainerProfile trainerProfile = trainerProfileService.getTrainerProfile(id);
+    @GetMapping()
+    public ResponseEntity<TrainerProfile> getTrainerProfile(@RequestHeader("USERNAME") String userName) {
+        log.info("Fetching Customer with username {}", userName);
+        TrainerProfile trainerProfile = trainerProfileService.getTrainerProfile(userName);
         if (  null == trainerProfile) {
-            log.error("Trainer profile with id {} not found.", id);
+            log.error("Trainer profile with username {} not found.", userName);
             return  ResponseEntity.notFound().build();
         }
         return  ResponseEntity.ok(trainerProfile);
     }
 
     @PostMapping
-    public ResponseEntity<TrainerProfile> createTrainerProfile(@Valid @RequestBody TrainerProfile trainerProfile, BindingResult result) {
-        log.info("Creating Trainer Profile : {}", trainerProfile);
+    public ResponseEntity<TrainerProfile> createTrainerProfile(@Valid @RequestBody TrainerProfileNewDTO trainerProfileNewDTO,
+                                                               @RequestHeader("USERNAME") String userName, BindingResult result) {
+        log.info("Creating trainer profile : {}", userName);
+        TrainerProfile trainerProfileDB;
+
         if (result.hasErrors()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, this.formatMessage(result));
         }
-
-        TrainerProfile trainerProfileDB = trainerProfileService.createTrainerProfile (trainerProfile);
-
-        return  ResponseEntity.status( HttpStatus.CREATED).body(trainerProfileDB);
+        trainerProfileDB = trainerProfileService.createTrainerProfile (userName, trainerProfileNewDTO);
+        return  ResponseEntity.status(HttpStatus.CREATED).body(trainerProfileDB);
     }
 
-    @PutMapping(value = "/{id}")
-    public ResponseEntity<?> updateTrainerProfile(@Valid @PathVariable("id") long id, @RequestBody TrainerProfile trainerProfile, BindingResult result) {
-        log.info("Updating Customer with id {}", id);
+    @PutMapping
+    public ResponseEntity<?> updateTrainerProfile(@Valid @RequestBody TrainerProfileUpdateDTO trainerProfileUpdateDTO,
+                                                  @RequestHeader("USERNAME") String userName, BindingResult result) {
+        log.info("Updating trainer with username {}", userName);
+        TrainerProfile trainerProfileDB;
 
         if (result.hasErrors()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, this.formatMessage(result));
         }
 
-        TrainerProfile currentTrainerProfile = trainerProfileService.getTrainerProfile(id);
+        trainerProfileDB = trainerProfileService.updateTrainerProfile(userName, trainerProfileUpdateDTO);
 
-        if ( null == currentTrainerProfile ) {
-            log.error("Unable to update. Trainer profile with id {} not found.", id);
+        if ( null == trainerProfileDB ) {
+            log.error("Unable to update. Trainer profile with username {} not found.", userName);
             return  ResponseEntity.notFound().build();
         }
-        trainerProfile.setTrainerId(id);
-        trainerProfile = trainerProfileService.updateTrainerProfile(trainerProfile);
-        return  ResponseEntity.ok(trainerProfile);
+
+        return  ResponseEntity.status(HttpStatus.CREATED).body(trainerProfileDB);
     }
 
     private String formatMessage( BindingResult result){

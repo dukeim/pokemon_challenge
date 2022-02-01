@@ -19,12 +19,12 @@ public class TeamService implements ITeamService{
 
     @Override
     @Transactional()
-    public List<TeamMember> saveTeam(Long trainerId, List<PokemonBasicDTO> memberList) {
-        teamRepository.deleteTeam(trainerId);
+    public List<TeamMember> saveTeam(String userName, List<PokemonBasicDTO> memberList) {
         List<TeamMember> newTeam = new ArrayList<>();
-        List<TeamMember> teamDB = getTeam(trainerId);
-
         TeamMember teamMemberDB;
+
+        teamRepository.deleteTeam(userName);
+        List<TeamMember> teamDB = getTeamHistory(userName);
         if(teamDB != null){
             for (PokemonBasicDTO pokemonDTO:memberList) {
                 teamMemberDB = teamDB.stream()
@@ -35,7 +35,7 @@ public class TeamService implements ITeamService{
                 }else{
                     teamMemberDB = new TeamMember();
                     teamMemberDB.setPokemonName(pokemonDTO.getName());
-                    teamMemberDB.setTrainerId(trainerId);
+                    teamMemberDB.setUserName(userName);
                     teamMemberDB.setDeleted(false);
                 }
                 newTeam.add(teamMemberDB);
@@ -45,7 +45,7 @@ public class TeamService implements ITeamService{
             for (PokemonBasicDTO pokemonDTO:memberList) {
                 teamMemberDB = new TeamMember();
                 teamMemberDB.setPokemonName(pokemonDTO.getName());
-                teamMemberDB.setTrainerId(trainerId);
+                teamMemberDB.setUserName(userName);
                 teamMemberDB.setDeleted(false);
                 newTeam.add(teamMemberDB);
             }
@@ -55,15 +55,14 @@ public class TeamService implements ITeamService{
     }
 
     @Override
-    public List<TeamMember> getTeam(Long trainerId) {
-        return teamRepository.findByTrainerIdAndDeletedFalse(trainerId).orElse(null);
+    public List<TeamMember> getTeam(String userName) {
+        return teamRepository.findByUserNameAndDeletedFalse(userName).orElse(null);
     }
 
     @Override
-    public TeamMember getTeamMember(Long trainerId, String pokemonName) {
-        TeamMember memberTeam = teamRepository
-                .findByTrainerIdAndPokemonNameAndDeletedFalse(trainerId, pokemonName).orElse(null);
-
-        return memberTeam;
+    public List<TeamMember> getTeamHistory(String userName) {
+        return teamRepository.findByUserName(userName).orElse(null);
     }
+
+
 }
