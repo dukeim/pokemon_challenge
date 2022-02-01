@@ -1,5 +1,5 @@
 server:
-  port: 9091
+  port: 9092
   error:
     include-message: always
     include-binding-errors: always
@@ -32,3 +32,4 @@ spring:
         show_sql: true
         use_sql_comments: false
         format_sql: false
+

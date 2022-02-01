@@ -5,6 +5,7 @@ import com.jego.pokemon.gatewayservice.auth.AuthenticationManager;
 import com.jego.pokemon.gatewayservice.auth.SecurityContextRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.context.annotation.Bean;
 
 import org.springframework.http.HttpMethod;
@@ -17,6 +18,8 @@ import org.springframework.security.config.web.server.ServerHttpSecurity;
 
 import org.springframework.security.web.server.SecurityWebFilterChain;
 import reactor.core.publisher.Mono;
+
+import java.security.Principal;
 
 
 @EnableWebFluxSecurity
@@ -49,10 +52,23 @@ public class WebSecurityConfig  {
                 .authorizeExchange()
                 .pathMatchers( HttpMethod.OPTIONS).permitAll()
                 .pathMatchers("/security/login").permitAll()
-
+                .pathMatchers("/security/signup").permitAll()
                 .anyExchange().authenticated()
                 .and().build();
     }
 
+    @Bean
+    public GlobalFilter customGlobalFilter() {
+        return (exchange, chain) -> exchange.getPrincipal()
+                .map(Principal::getName)
+                .defaultIfEmpty("Default User")
+                .map(userName -> {
+                    //adds header to proxied request
+                    exchange.getRequest().mutate().header("USERNAME", userName).build();
+                    return exchange;
+                })
+                .flatMap(chain::filter);
+
+    }
 
 }
