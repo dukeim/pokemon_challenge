@@ -11,4 +11,5 @@ public class PokemonResumeDTO {
     private String name;
     private List<StatsDTO> stats;
     private List<TypesDTO> types;
+    private SpritesDTO sprites;
 }
