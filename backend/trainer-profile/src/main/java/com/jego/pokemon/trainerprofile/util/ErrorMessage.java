@@ -1,4 +1,4 @@
-package com.jego.pokemon.trainerprofile.controller;
+package com.jego.pokemon.trainerprofile.util;
 
 import lombok.Builder;
 import lombok.Getter;
