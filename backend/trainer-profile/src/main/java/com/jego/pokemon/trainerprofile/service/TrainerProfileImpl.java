@@ -1,6 +1,6 @@
 package com.jego.pokemon.trainerprofile.service;
 
-import com.jego.pokemon.trainerprofile.dto.TrainerProfileCreatedDTO;
+import com.jego.pokemon.trainerprofile.dto.TrainerProfileBasicDTO;
 import com.jego.pokemon.trainerprofile.dto.TrainerProfileNewDTO;
 import com.jego.pokemon.trainerprofile.dto.TrainerProfileUpdateDTO;
 import com.jego.pokemon.trainerprofile.entity.TrainerProfile;
@@ -22,12 +22,12 @@ public class TrainerProfileImpl implements  ITrainerProfileService{
     private IImageService imageService;
 
     @Override
-    public TrainerProfileCreatedDTO createTrainerProfile(String userName, TrainerProfileNewDTO trainerProfileNewDTO) {
-        TrainerProfile trainerProfileDB = getTrainerProfile(userName);
-        TrainerProfileCreatedDTO trainerProfileCreatedDTO;
+    public TrainerProfileBasicDTO createTrainerProfile(String userName, TrainerProfileNewDTO trainerProfileNewDTO) {
+        TrainerProfile trainerProfileDB = getTrainerProfileDB(userName);
+        TrainerProfileBasicDTO trainerProfileCreatedDTO;
 
         if (trainerProfileDB != null){
-            return  mapTrainerProfileDBToTrainerProfileCreatedDTO(trainerProfileDB);
+            return  mapTrainerProfileDBToTrainerProfileBasicDTO(trainerProfileDB);
         }
         trainerProfileDB = new TrainerProfile();
         trainerProfileDB.setUserName(userName);
@@ -39,12 +39,12 @@ public class TrainerProfileImpl implements  ITrainerProfileService{
         trainerProfileDB.setPhoto(null);
         trainerProfileDB = trainerProfileRepository.save ( trainerProfileDB );
 
-        return mapTrainerProfileDBToTrainerProfileCreatedDTO(trainerProfileDB);
+        return mapTrainerProfileDBToTrainerProfileBasicDTO(trainerProfileDB);
     }
 
     @Override
     public TrainerProfile updateTrainerProfile(String userName, TrainerProfileUpdateDTO trainerProfileUpdateDTO) {
-        TrainerProfile trainerProfileDB = getTrainerProfile(userName);
+        TrainerProfile trainerProfileDB = getTrainerProfileDB(userName);
         if (trainerProfileDB == null){
             return  null;
         }
@@ -60,8 +60,9 @@ public class TrainerProfileImpl implements  ITrainerProfileService{
     }
 
     @Override
-    public TrainerProfile getTrainerProfile(String userName) {
-        return  trainerProfileRepository.findByUserName(userName).orElse(null);
+    public TrainerProfileBasicDTO getTrainerProfileBasic(String userName) {
+        TrainerProfile trainerProfileDB = trainerProfileRepository.findByUserName(userName).orElse(null);
+        return mapTrainerProfileDBToTrainerProfileBasicDTO(trainerProfileDB);
     }
 
     @Override
@@ -71,7 +72,7 @@ public class TrainerProfileImpl implements  ITrainerProfileService{
 
         compressedImage = imageService.compressBytes(image);
         if (compressedImage != null) {
-            trainerProfileDB = getTrainerProfile(userName);
+            trainerProfileDB = getTrainerProfileDB(userName);
             if (trainerProfileDB != null) {
                 trainerProfileDB.setPhoto(compressedImage);
                 trainerProfileRepository.save(trainerProfileDB);
@@ -86,7 +87,7 @@ public class TrainerProfileImpl implements  ITrainerProfileService{
 
     public byte[] getPhoto(String userName) throws TrainerNotFoundException{
         TrainerProfile trainerProfileDB;
-        trainerProfileDB = getTrainerProfile(userName);
+        trainerProfileDB = getTrainerProfileDB(userName);
 
         if(trainerProfileDB!=null){
             return imageService.decompressBytes(trainerProfileDB.getPhoto());
@@ -99,14 +100,18 @@ public class TrainerProfileImpl implements  ITrainerProfileService{
         int age = Period.between(birthDate, LocalDate.now()).getYears();
         return age<18? Constants.MINORIDAD : Constants.DUI;
     }
+    private TrainerProfile getTrainerProfileDB(String userName){
+        return trainerProfileRepository.findByUserName(userName).orElse(null);
+    }
 
-    private TrainerProfileCreatedDTO mapTrainerProfileDBToTrainerProfileCreatedDTO(TrainerProfile trainerProfileDB){
-        TrainerProfileCreatedDTO trainerProfileCreatedDTO = new TrainerProfileCreatedDTO();
-        trainerProfileCreatedDTO.setName(trainerProfileDB.getName());
-        trainerProfileCreatedDTO.setBirthDate(trainerProfileDB.getBirthDate());
-        trainerProfileCreatedDTO.setDocNumber(trainerProfileDB.getDocNumber());
-        trainerProfileCreatedDTO.setDocType(trainerProfileDB.getDocType());
-        trainerProfileCreatedDTO.setHobby(trainerProfileDB.getHobby());
-        return trainerProfileCreatedDTO;
+    private TrainerProfileBasicDTO mapTrainerProfileDBToTrainerProfileBasicDTO(TrainerProfile trainerProfileDB){
+        TrainerProfileBasicDTO trainerProfileBasicDTO = new TrainerProfileBasicDTO();
+        trainerProfileBasicDTO.setName(trainerProfileDB.getName());
+        trainerProfileBasicDTO.setBirthDate(trainerProfileDB.getBirthDate());
+        trainerProfileBasicDTO.setDocNumber(trainerProfileDB.getDocNumber());
+        trainerProfileBasicDTO.setDocType(trainerProfileDB.getDocType());
+        trainerProfileBasicDTO.setHobby(trainerProfileDB.getHobby());
+        trainerProfileBasicDTO.setAge(Period.between(trainerProfileDB.getBirthDate(), LocalDate.now()).getYears());
+        return trainerProfileBasicDTO;
     }
 }
