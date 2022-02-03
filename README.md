@@ -8,9 +8,11 @@
 This repository contains the source code of three instrumentalization microservices: 
 Microservice | Port | Description
 | :--- | :---: | :---
-gateway     | 9090 | Implements the api gateway design pattern and fullfil the role of authorization service with JWT.
+gateway*     | 9090 | Implements the api gateway design pattern and fullfil the role of authorization service with JWT.
 eureka	    |  8099 | Implements the discovery service design pattern.
-security    | 9092 | Implements authentication service with JWT.
+security*    | 9092 | Implements authentication service with JWT.
+
+'* ***Requires public and private RSA Certificates in C:/RSACertificates. For testing you can copy the ones in the resources folder.***
 
 And three business microservices: 
 Microservice | Port | Description
