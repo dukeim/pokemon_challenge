@@ -2,7 +2,7 @@ package com.jego.pokemon.trainerprofile.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jego.pokemon.trainerprofile.dto.TrainerProfileCreatedDTO;
+import com.jego.pokemon.trainerprofile.dto.TrainerProfileBasicDTO;
 import com.jego.pokemon.trainerprofile.dto.TrainerProfileNewDTO;
 import com.jego.pokemon.trainerprofile.dto.TrainerProfileUpdateDTO;
 import com.jego.pokemon.trainerprofile.entity.TrainerProfile;
@@ -39,23 +39,23 @@ public class TrainerProfileController {
 
 
     @GetMapping()
-    public ResponseEntity<TrainerProfile> getTrainerProfile(@RequestHeader("USERNAME") String userName) {
+    public ResponseEntity<TrainerProfileBasicDTO> getTrainerProfile(@RequestHeader("USERNAME") String userName) {
         log.info("Fetching Customer with username {}", userName);
-        TrainerProfile trainerProfile = trainerProfileService.getTrainerProfile(userName);
-        if (  null == trainerProfile) {
+        TrainerProfileBasicDTO trainerProfileBasicDTO = trainerProfileService.getTrainerProfileBasic(userName);
+        if (  null == trainerProfileBasicDTO) {
             log.error("Trainer profile with username {} not found.", userName);
             return  ResponseEntity.notFound().build();
         }
-        return  ResponseEntity.ok(trainerProfile);
+        return  ResponseEntity.ok(trainerProfileBasicDTO);
     }
 
     @PostMapping
-    public ResponseEntity<TrainerProfileCreatedDTO> createTrainerProfile(@Valid @RequestBody TrainerProfileNewDTO trainerProfileNewDTO,
-                                                               @RequestHeader("USERNAME") String userName, BindingResult result)
+    public ResponseEntity<TrainerProfileBasicDTO> createTrainerProfile(@Valid @RequestBody TrainerProfileNewDTO trainerProfileNewDTO,
+                                                                       @RequestHeader("USERNAME") String userName, BindingResult result)
                                                                 throws ResponseStatusException{
         log.info("Creating trainer profile : {}", userName);
         TrainerProfile trainerProfileDB;
-        TrainerProfileCreatedDTO trainerProfileCreatedDTO;
+        TrainerProfileBasicDTO trainerProfileCreatedDTO;
 
         if (result.hasErrors()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, this.formatMessage(result));
