@@ -30,6 +30,8 @@ The microservices database is self-contained, when it starts it creates an in-me
 ## Requirements 
 * java 11 or higher
 * git 
+* gradle 6.8 or higher
+
 
 ## Running the microservices
 1. Download as zip or clone the repository using git or any graphical wizard.
