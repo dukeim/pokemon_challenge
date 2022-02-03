@@ -26,9 +26,8 @@ All dependencies are described in the gradle configuration file build.gradle
 The microservices database is self-contained, when it starts it creates an in-memory H2 database.
 
 ## Requirements 
-* java 11 o superior
+* java 11 or higher
 * git 
-* IDE de desarrollo
 
 ## Running the microservices
 1. Download as zip or clone the repository using git or any graphical wizard.
