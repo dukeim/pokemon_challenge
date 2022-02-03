@@ -6,18 +6,18 @@
 
 ## Content
 This repository contains the source code of three instrumentalization microservices: 
-Microservice | Description
-| :--- | :---
-gateway     | Implements the api gateway design pattern and fullfil the role of authorization service with JWT.
-eureka	    | Implements the discovery service design pattern.
-security    | Implements authentication service with JWT.
+Microservice | Port | Description
+| :--- | :---: | :---
+gateway     | 9090 | Implements the api gateway design pattern and fullfil the role of authorization service with JWT.
+eureka	    |  8099 | Implements the discovery service design pattern.
+security    | 9092 | Implements authentication service with JWT.
 
 And three business microservices: 
-Microservice | Description
-| :--- | :---
-team-manager | Manage the team domail.
-trainer      | Manage the trainer profile domain.
-catalog	     | Manage the pokemon catalogue.
+Microservice | Port | Description
+| :--- | :---: | :---
+trainer      | 8090 | Manage the trainer profile domain.
+catalog	    | 8091 | Manage the pokemon catalogue.
+team-manager | 8092 | Manage the team domail.
 
 Each microservice is managed with gradle.
 
